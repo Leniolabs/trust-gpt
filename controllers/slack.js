@@ -1,5 +1,4 @@
 
-import slackWebClient from "../lib/clients/slack-web-client.js";
 import { getThreadMessages } from "../lib/utils/slack/get-thread-messages.js";
 import slackToOpenAI from "../lib/utils/slack/slack-thread-to-openai.js";
 import getSlackBotUserId from "../lib/utils/slack/slack-bot-user-id.js";
@@ -29,9 +28,10 @@ export default async (req, res) => {
       } catch (error) {
         console.error("Error posting message:", error);
       }
+      return;
     }
     // Respond to Slack quickly
-    return;
+    return res.status(200).send();
   }
   // Default response
   res.status(200).send();
