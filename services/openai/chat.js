@@ -1,8 +1,9 @@
 import openaiClient from "../../lib/clients/openai-client.js";
 import prompt from "../../lib/prompts/prompt.js";
+import removeWrongFormatting from "../../lib/utils/openai/remove-wrong-formatting.js";
 
 export default async function chat(context) {
-  const messages = [
+  const input = [
     {
       role: "system",
       content: prompt,
@@ -11,15 +12,14 @@ export default async function chat(context) {
   ];
 
   // Get AI response
-  const response = await openaiClient.chat.completions.create({
+  const response = await openaiClient.responses.create({
     model: "gpt-4.1",
-    messages,
+    tools: [
+        { type: "web_search_preview" },
+    ],
+    input,
     temperature: 0.7,
   });
 
-  const aiResponse =
-    response.choices[0]?.message?.content ||
-    "Sorry, I could not generate a response.";
-
-  return aiResponse;
+  return removeWrongFormatting(response.output_text);
 }
